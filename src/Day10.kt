@@ -3,7 +3,23 @@ import java.util.Queue
 import kotlin.math.max
 import kotlin.math.min
 
+
+fun Char.toNicerCharacter(): Char {
+  return when(this) {
+    '7' -> '┓'
+    'F' -> '┏'
+    'J' -> '┛'
+    'L' -> '┗'
+    '|' -> '┃'
+    '-' -> '━'
+    else -> this
+  }
+}
+
 fun main() {
+
+
+
   fun getShortestPath(input: List<String>, sx: Int, sy: Int): List<List<Int>> {
     val n = input.size
     val m = input[0].length
@@ -48,8 +64,6 @@ fun main() {
         queue.add(x to y-1)
       }
     }
-
-    println(res)
 
     return res
   }
@@ -123,19 +137,22 @@ fun main() {
       res.add(getShortestPath(input, sx, sy+1))
     }
 
-    var ans = 0
-    for (i in 0 until n)
+    for (i in 0 until n) {
       for (j in 0 until m) {
-        if (res[0][i][j] != -1 && res[1][i][j] != -1) {
-          ans = max(ans, min(res[0][i][j], res[1][i][j]))
+        if (res[0][i][j] != -1 && res[0][i][j] != -1) {
+          print("\u001B[31m")
         }
+        print(input[i][j].toNicerCharacter())
+        print("\u001B[0m")
       }
+      println()
+    }
 
     val num = MutableList(n) {MutableList(m) {0} }
     for (i in 0 until n) {
       for ( j in 0 until m) {
         num[i][j] = 0
-        if (res[0][i][j] != -1 && res[1][i][j] != -1 && res[0][i][j] + res[1][i][j] == 2*ans) {
+        if (res[0][i][j] != -1 && res[1][i][j] != -1) {
           if (input[i][j] == '|') num[i][j] = 1
           else if (input[i][j] == '-') num[i][j] = 0
           else if (input[i][j] == 'L' || input[i][j] == 'J') num[i][j] = 1
@@ -149,7 +166,7 @@ fun main() {
     for (i in 0 until n) {
       var sum = 0
       for (j in 0 until m) {
-        if (input[i][j] == '.' && sum%2 == 1) {
+        if (res[0][i][j] == -1 && input[i][j] != 'S' && sum%2 == 1) {
           cnt++
         }
         sum += num[i][j]
@@ -159,6 +176,8 @@ fun main() {
     return cnt
 
   }
+
+
 
   // test if implementation meets criteria from the description, like:
   val testInput = readInput("Day10_test")
